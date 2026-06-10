@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { Clock, LogIn } from 'lucide-react';
+import { Clock, LogIn, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const SECRET_KEY = "Workforce_Secret_Key_Bomba"; // En producción esto vendría de variables de entorno
@@ -14,6 +14,7 @@ export const getTimeWindow = () => {
 export default function StationQRDisplay() {
   const [timeWindow, setTimeWindow] = useState(getTimeWindow());
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,6 +36,35 @@ export default function StationQRDisplay() {
       clearInterval(windowInterval);
     };
   }, [timeWindow]);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      // Check if iOS to provide manual instructions
+      const isIos = /ipad|iphone|ipod/.test(navigator.userAgent.toLowerCase());
+      if (isIos) {
+        alert('Para instalar en iPhone: Toca el ícono de "Compartir" (el cuadrito con la flecha) en el menú de tu navegador, y luego selecciona "Agregar a inicio".');
+      } else {
+        alert('La app ya está instalada o tu navegador no soporta instalación directa. Intenta buscar la opción "Instalar aplicación" o "Agregar a inicio" en el menú de tu navegador.');
+      }
+      return;
+    }
+    
+    // Show prompt
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
 
   // Generar un hash rudimentario con el secreto para el payload
   // Payload final: BOMBA_QR|{window}|{secret_hash}
@@ -102,6 +132,26 @@ export default function StationQRDisplay() {
       >
         <LogIn size={20} />
         Iniciar Sesión
+      </button>
+
+      {/* Botón de Descargar App */}
+      <button 
+        onClick={handleInstallClick}
+        className="btn btn-primary"
+        style={{ 
+          position: 'fixed', 
+          bottom: '24px', 
+          left: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '12px 24px',
+          borderRadius: '30px',
+          boxShadow: '0 8px 32px rgba(195, 245, 60, 0.3)'
+        }}
+      >
+        <Download size={20} />
+        Instalar App
       </button>
     </div>
   );
