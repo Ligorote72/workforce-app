@@ -117,7 +117,7 @@ export default function StationQRDisplay() {
         className="btn btn-secondary"
         style={{ 
           position: 'fixed', 
-          bottom: '24px', 
+          top: '24px', 
           right: '24px',
           display: 'flex',
           alignItems: 'center',
