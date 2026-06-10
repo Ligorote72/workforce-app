@@ -144,13 +144,14 @@ export default function StationQRDisplay() {
           left: '24px',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          padding: '12px 24px',
-          borderRadius: '30px',
-          boxShadow: '0 8px 32px rgba(195, 245, 60, 0.3)'
+          gap: '6px',
+          padding: '8px 16px',
+          fontSize: '0.85rem',
+          borderRadius: '20px',
+          boxShadow: '0 4px 16px rgba(195, 245, 60, 0.2)'
         }}
       >
-        <Download size={20} />
+        <Download size={16} />
         Instalar App
       </button>
     </div>
