@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icon.png'],
+      includeAssets: ['icon.png', 'icon-192.png', 'icon-512.png'],
       manifest: {
         name: 'Workforce App',
         short_name: 'Workforce',
@@ -17,8 +17,14 @@ export default defineConfig({
         display: 'standalone',
         icons: [
           {
-            src: 'icon.png',
-            sizes: '192x192 512x512',
+            src: 'icon-192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any maskable'
+          },
+          {
+            src: 'icon-512.png',
+            sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
           }
